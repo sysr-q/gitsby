@@ -45,10 +45,6 @@ func readConfig(path string) (GitsbyConfig, error) {
 		// just try and stop me
 		return c, jerr
 	}
-	if len(c.Repos) == 0 {
-		// no really, just try stopping me
-		return c, errors.New("gitsby.json contained no repos! :(")
-	}
 	return c, nil
 }
 
