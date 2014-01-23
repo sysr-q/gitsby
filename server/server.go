@@ -64,14 +64,14 @@ func loadConfig() (GitsbyConfig, error) {
 	return readConfig(defaultPath)
 }
 
-func Setup() (err error) {
+func Setup() error {
 	// Load our config file.
 	if conf, loadErr := loadConfig(); loadErr != nil {
-		panic(loadErr)
+		return loadErr
 	} else {
 		Config = conf
 	}
 	// Set up our web.go server
 	Server = web.NewServer()
-	return
+	return nil
 }

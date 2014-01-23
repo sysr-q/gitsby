@@ -1,12 +1,10 @@
 package main
 
 import (
-	//"os"
 	"fmt"
-	//"path"
-	//"html/template"
+	_ "path"
+	_ "html/template"
 	"github.com/hoisie/web"
-
 	"github.com/plausibility/gitsby/server"
 )
 
@@ -22,7 +20,9 @@ func hook(ctx *web.Context) string {
 }
 
 func main() {
-	server.Setup()
+	if setupErr := server.Setup(); setupErr != nil {
+		panic(setupErr)
+	}
 	fmt.Println(server.Config)
 	server.Server.Get("/", home)
 	server.Server.Post("/hook", hook)
