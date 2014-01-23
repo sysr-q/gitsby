@@ -11,16 +11,6 @@ import (
 	"github.com/hoisie/web"
 )
 
-type Repo struct {
-	Url string `json:"url"`
-	Directory string `json:"directory"`
-}
-
-type GitsbyConfig struct {
-	Landing bool `json:"landing"`
-	Repos []Repo `json:"repos"`
-}
-
 var Server *web.Server
 var Config GitsbyConfig
 
