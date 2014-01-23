@@ -24,7 +24,7 @@ func hook(ctx *web.Context) string {
 func main() {
 	server.Setup()
 	fmt.Println(server.Config)
-	web.Get("/", home)
-	web.Post("/hook", hook)
-	web.Run("0.0.0.0:9999")
+	server.Server.Get("/", home)
+	server.Server.Post("/hook", hook)
+	server.Server.Run("0.0.0.0:9999")
 }

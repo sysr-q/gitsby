@@ -58,20 +58,20 @@ func loadConfig() (GitsbyConfig, error) {
 		// Let's use the env var
 		return readConfig(envPath)
 	}
-	// Check ~/gitsby/gitsby.json (default)
+	// Check ~/gitsby/gitsby.json (default config)
 	var usr, _ = user.Current()
-	dir := usr.HomeDir
-	defaultPath := path.Join(dir, "gitsby", "gitsby.json")
+	defaultPath := path.Join(usr.HomeDir, "gitsby", "gitsby.json")
 	return readConfig(defaultPath)
 }
 
 func Setup() (err error) {
 	// Load our config file.
-	conf, loadErr := loadConfig()
-	if loadErr != nil {
-		panic(err)
+	if conf, loadErr := loadConfig(); loadErr != nil {
+		panic(loadErr)
 	} else {
 		Config = conf
 	}
+	// Set up our web.go server
+	Server = web.NewServer()
 	return
 }
