@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	// TODO: pass arounds flags instead of env vars.
+	_ "flag"
 	_ "path"
 	_ "html/template"
 	"github.com/hoisie/web"
@@ -9,13 +11,12 @@ import (
 )
 
 func home() string {
-	return "hello"
+	// TODO: render a template detailing what repos are being hooked,
+	// (unless they're hidden), and wtf gitsby is. 
+	return ""
 }
 
 func hook(ctx *web.Context) string {
-	// todo
-	// tpl_path := path.Join()
-	// tpl, err := template.ParseFiles(tpl_path)
 	return ""
 }
 
@@ -24,7 +25,9 @@ func main() {
 		panic(setupErr)
 	}
 	fmt.Println(server.Config)
-	server.Server.Get("/", home)
+	if server.Config.Landing {
+		server.Server.Get("/", home)
+	}
 	server.Server.Post("/hook", hook)
 	server.Server.Run("0.0.0.0:9999")
 }
