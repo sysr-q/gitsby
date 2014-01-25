@@ -23,67 +23,73 @@ func (r Repo) Exists() bool {
 }
 
 func (r Repo) Clone() (bool, error) {
+	owner, name := r.Name()
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
-	cmd := exec.Command("git", "clone", r.Url)
-	cmd.Dir = path.Join(r.Path(), "..")
+	// git clone git@github.com:owner/repo.git owner/repo
+	cmd := exec.Command("git", "clone", r.Url, path.Join(owner, name))
+	cmd.Dir = path.Join(r.Path(), "..", "..")
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
-		util.Failuref("[%s] failed to clone! Here's why: (stderr)", r.Name())
+		util.Failuref("[%s/%s] failed to clone! Here's why: (stderr)", owner, name)
 		util.Red(strings.TrimSuffix(stderr.String(), "\n"))
 		return false, err
 	}
-	util.Successf("[%s] successfully cloned to: %s", r.Name(), r.Path())
+	util.Successf("[%s/%s] successfully cloned to: %s", owner, name, r.Path())
 	util.Blue(strings.TrimSuffix(stdout.String(), "\n"))
 	return true, nil
 }
 
 func (r Repo) Pull() (bool, error) {
+	owner, name := r.Name()
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
+	// git pull origin
 	cmd := exec.Command("git", "pull", "origin")
 	cmd.Dir = r.Path()
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
-		util.Failuref("[%s] failed to pull! Here's why:", r.Name())
+		util.Failuref("[%s/%s] failed to pull! Here's why:", owner, name)
 		util.Red(strings.TrimSuffix(stderr.String(), "\n"))
 		return false, err
 	}
-	util.Successf("[%s] synced", r.Name())
+	util.Successf("[%s/%s] synced", owner, name)
 	util.Blue(strings.TrimSuffix(stdout.String(), "\n"))
 	return true, nil
 }
 
 func (r Repo) Deploy() (bool, error) {
+	owner, name := r.Name()
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
+	// make autodeploy
 	cmd := exec.Command("make", "autodeploy")
 	cmd.Dir = r.Path()
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
-		util.Failuref("[%s] failed to `make autodeploy`! Here's why:", r.Name())
+		util.Failuref("[%s/%s] failed to 'make autodeploy'! Here's why:", owner, name)
 		util.Red(strings.TrimSuffix(stderr.String(), "\n"))
 		return false, err
 	}
-	util.Successf("[%s] autodeployed!", r.Name())
+	util.Successf("[%s/%s] autodeployed!", owner, name)
 	util.Blue(strings.TrimSuffix(stdout.String(), "\n"))
 	return true, nil
 }
 
-var metadataRegex = regexp.MustCompile(`[:/](?:\w+)/(?P<repo>[^.]+)`)
+var metadataRegex = regexp.MustCompile(`[:/](?P<owner>\w+)/(?P<repo>[^.]+)`)
 
-func (r Repo) Name() string {
+func (r Repo) Name() (string, string) {
 	return RepoName(r.Url)
 }
 
-func RepoName(url string) string {
+func RepoName(url string) (string, string) {
 	if ms := metadataRegex.FindStringSubmatch(url); ms != nil {
-		return ms[1]
+		return ms[1], ms[2]
 	}
-	return ""
+	return "", ""
 }
 
 var usr, _ = user.Current()
@@ -96,9 +102,9 @@ func (r Repo) Path() string {
 		}
 		return r.Directory
 	}
-	if name := r.Name(); name != "" {
-		// ~/gitsby/{{ repo_name }}
-		return util.GitsbyFolder(name)
+	if owner, name := r.Name(); owner != "" && name != "" {
+		// ~/gitsby/{{ owner }}/{{ name }}
+		return util.GitsbyFolder(owner, name)
 	}
 	panic(errors.New("Unable to generate Path() for repo: " + r.Url))
 }

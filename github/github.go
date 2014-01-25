@@ -9,14 +9,21 @@ import (
 
 func Hook(ctx *web.Context) {
 	p := NewPayload([]byte(ctx.Params["payload"]))
-	name := git.RepoName(p.Url())
-	if name == "" { return }
-	repo, ok := server.Config.ReposActive[name]
-	if !ok {
-		util.Infof("Received payload for unknown repo: '%s', ignoring!", name)
+	owner, name := git.RepoName(p.Url())
+	if owner == "" || name == "" {
+		util.Infof("Received unparseable payload: '%s/%s', ignoring!", owner, name)
 		return
 	}
-	if ok, err := repo.Pull(); err == nil && ok {
-		repo.Deploy()
+	repo, ok := server.Config.ReposActive[owner + "/" + name]
+	if !ok {
+		util.Infof("Received payload for unknown repo: '%s/%s', ignoring!", owner, name)
+		return
 	}
+	// goroutines to cheat around `git pull` blocking HTTP.
+	go func() {
+		if ok, err := repo.Pull(); err == nil && ok {
+			// Only deploy if we pull'd successfully.
+			repo.Deploy()
+		}
+	}();
 }

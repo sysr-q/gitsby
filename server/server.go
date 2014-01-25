@@ -30,7 +30,8 @@ func readConfig(path string) (GitsbyConfig, error) {
 	// Set up a map of name -> repo.
 	c.ReposActive = make(map[string]git.Repo)
 	for _, repo := range c.Repos {
-		c.ReposActive[repo.Name()] = repo
+		owner, name := repo.Name()
+		c.ReposActive[owner + "/" + name] = repo
 	}
 	return c, nil
 }

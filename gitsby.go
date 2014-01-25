@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"flag"
+	"io/ioutil"
 	_ "html/template"
 	_ "github.com/plausibility/gitsby/git"
 	"github.com/plausibility/gitsby/util"
@@ -32,13 +33,16 @@ func main() {
 	if setupErr := server.Setup(config); setupErr != nil {
 		panic(setupErr)
 	}
+	// YOU DESERVE NO OUTPUT, CONSOLE SPAMMER.
+	server.Server.SetLogger(log.New(ioutil.Discard, "", 0))
 
 	log.Println("The Great Gitsby is throwing a party!")
 
 	util.Infof("Preparing %d repo(s) for sync", len(server.Config.Repos))
 	for _, repo := range server.Config.Repos {
 		if !repo.Exists() {
-			util.Infof("[%s] doesn't exist, syncing!", repo.Name())
+			owner, name := repo.Name()
+			util.Infof("[%s/%s] doesn't exist, syncing!", owner, name)
 			repo.Clone()
 		} else {
 			repo.Pull()
@@ -50,6 +54,6 @@ func main() {
 		server.Server.Get("/", home)
 	}
 	server.Server.Post("/github", github.Hook)
-
+	log.Println(fmt.Sprintf("The party is here: %s", bindTo))
 	server.Server.Run(bindTo)
 }
