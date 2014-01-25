@@ -1,12 +1,8 @@
 package server
 
-type Repo struct {
-	Url string `json:"url"`
-	Directory string `json:"directory"`
-	Hidden bool `json:"hidden"`
-}
+import "github.com/plausibility/gitsby/git"
 
 type GitsbyConfig struct {
 	Landing bool `json:"landing"`
-	Repos []Repo `json:"repos"`
+	Repos []git.Repo `json:"repos"`
 }

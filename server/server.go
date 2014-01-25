@@ -1,9 +1,7 @@
 package server
 
 import (
-	"os"
 	"fmt"
-	"log"
 	"errors"
 	"io/ioutil"
 	"encoding/json"
