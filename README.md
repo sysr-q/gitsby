@@ -3,7 +3,9 @@ The Great Gitsby
 
 Handle git commit hooks like a champ.
 
-The general idea behind Gitsby is similar to that of danneu's [captain-githook](https://github.com/danneu/captain-githook) - you provide a config file (either explicity through the `GITSBY_CONFIG` env var, or `~/gitsby/gitsby.json` by default) and Gitsby will handle commit hooks from both BitBucket and GitHub for you.
+The general idea behind Gitsby is similar to that of danneu's [captain-githook](https://github.com/danneu/captain-githook) - you provide a config file (either explicity through the `-config=file` flag, or `~/gitsby/gitsby.json` by default) and Gitsby will handle commit hooks from both BitBucket and GitHub for you.
+
+Gitsby will bind by default to `0.0.0.0:9999` - you can change this via the `-host=0.0.0.0` and `-port=9999` flags.
 
 # gitsby.json
 
@@ -25,5 +27,4 @@ The general idea is you provide two (currently) things: whether or not you want 
 The repos MUST contain at least a `url`, but MAY also contain a `directory` (where they'll be cloned, default is `~/gitsby/{{ project-name }}` from url), and whether or not they're `hidden` on the landing page.
 
 # Hook endpoints
-There are currently two (planned) endpoints: `/github` and `/bitbucket` - guess what they're designed to receive the payloads for?  
-At the moment, Gitsby will only bind to `0.0.0.0:9999` - this is planned to change via either command line flags, config variables or env vars. I'm not 100% certain yet.
+There are currently two (planned) endpoints: `/github` and `/bitbucket` - guess what each is designed to receive the payloads for?  
