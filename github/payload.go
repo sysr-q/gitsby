@@ -46,6 +46,7 @@ type Payload struct {
 func NewPayload(data []byte) Payload {
 	var payload Payload
 	if err := json.Unmarshal(data, &payload); err != nil {
+		panic(err)
 	}
 	return payload
 }
