@@ -76,10 +76,10 @@ func (r Repo) Deploy() (bool, error) {
 var metadataRegex = regexp.MustCompile(`[:/](?:\w+)/(?P<repo>[^.]+)`)
 
 func (r Repo) Name() string {
-	return Name(r.Url)
+	return RepoName(r.Url)
 }
 
-func Name(url string) string {
+func RepoName(url string) string {
 	if ms := metadataRegex.FindStringSubmatch(url); ms != nil {
 		return ms[1]
 	}
