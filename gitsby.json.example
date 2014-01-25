@@ -1,7 +1,7 @@
 {
 	"landing": true,
 	"repos": [
-		{"url": "git@bitbucket.com:plausibility/some-repo.git", "directory": "~/some-repo"},
-		{"url": "https://github.com/plausibility/some-other-repo.git"}
+		{"url": "git@bitbucket.com:some-dude/some-repo.git", "directory": "~/some-repo"},
+		{"url": "https://github.com/some-guy/some-other-repo.git"}
 	]
 }

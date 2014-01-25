@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	// TODO: pass arounds flags instead of env vars.
 	"flag"
 	_ "html/template"
 	_ "github.com/plausibility/gitsby/git"
@@ -39,11 +38,13 @@ func main() {
 
 	util.Infof("Preparing %d repo(s) for sync", len(server.Config.Repos))
 	for _, repo := range server.Config.Repos {
-		util.Infof("Checking %s", repo.Path())
 		if !repo.Exists() {
-			util.Info("Doesn't exist, syncing!")
+			util.Infof("[%s] doesn't exist, syncing!", repo.Name())
 			repo.Clone()
+		} else {
+			repo.Pull()
 		}
+		repo.Deploy()
 	}
 
 	if server.Config.Landing {

@@ -7,10 +7,24 @@ import (
 )
 
 var success string = ansi.ColorCode("green")
-var failure string = ansi.ColorCode("red+b")
+var failure string = ansi.ColorCode("red")
 var info string = ansi.ColorCode("blue")
 var reset string = ansi.ColorCode("reset")
 
+// Raw colors!
+func Green(str string) {
+	fmt.Println(success + str + reset)
+}
+
+func Red(str string) {
+	fmt.Println(failure + str + reset)
+}
+
+func Blue(str string) {
+	fmt.Println(info + str + reset)
+}
+
+// Handy helpers
 func Success(str string) {
 	log.Printf("%s%c %s%s", success, '\u2714', str, reset)
 }
@@ -27,7 +41,7 @@ func Failuref(format string, bits ...interface{}) {
 	Failure(fmt.Sprintf(format, bits...))
 }
 
-func Info(str string) { 
+func Info(str string) {
 	log.Printf("%s%c %s%s", info, '\u279C', str, reset)
 }
 

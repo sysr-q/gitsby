@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"github.com/hoisie/web"
+	"github.com/plausibility/gitsby/git"
 	"github.com/plausibility/gitsby/util"
 )
 
@@ -25,6 +26,11 @@ func readConfig(path string) (GitsbyConfig, error) {
 	if jerr := json.Unmarshal(data, &c); jerr != nil {
 		// just try and stop me
 		return c, jerr
+	}
+	// Set up a map of name -> repo.
+	c.ReposActive = make(map[string]git.Repo)
+	for _, repo := range c.Repos {
+		c.ReposActive[repo.Name()] = repo
 	}
 	return c, nil
 }
