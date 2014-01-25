@@ -19,7 +19,7 @@ func Hook(ctx *web.Context) {
 		util.Infof("Received payload for unknown repo: '%s/%s', ignoring!", owner, name)
 		return
 	}
-	util.Info("Received payload for: '%s/%s'!", owner, name)
+	util.Infof("Received payload for: '%s/%s'!", owner, name)
 	// goroutines to cheat around `git pull` blocking HTTP.
 	go func() {
 		if ok, err := repo.Pull(); err == nil && ok {
