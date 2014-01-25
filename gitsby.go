@@ -9,7 +9,6 @@ import (
 	"github.com/plausibility/gitsby/util"
 	"github.com/plausibility/gitsby/server"
 	"github.com/plausibility/gitsby/github"
-	"github.com/plausibility/gitsby/bitbucket"
 )
 
 func home() string {
@@ -51,7 +50,6 @@ func main() {
 		server.Server.Get("/", home)
 	}
 	server.Server.Post("/github", github.Hook)
-	server.Server.Post("/bitbucket", bitbucket.Hook)
 
 	server.Server.Run(bindTo)
 }
