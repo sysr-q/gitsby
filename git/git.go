@@ -79,7 +79,7 @@ func (r Repo) Deploy() (bool, error) {
 	return true, nil
 }
 
-var metadataRegex = regexp.MustCompile(`[:/](?P<owner>\w+)/(?P<repo>.+)(?:\.git)$`)
+var metadataRegex = regexp.MustCompile(`[:/](?P<owner>\w+)/(?P<repo>.+?)(?:\.git)?$`)
 
 func (r Repo) Name() (string, string) {
 	return RepoName(r.Url)
