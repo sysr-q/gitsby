@@ -94,7 +94,7 @@ make: *** No rule to make target 'autodeploy'.  Stop.
 
 I've been meaning to learn Go for several months, but just haven't had a good
 reason to. In these months, [Aki](https://github.com/aki--aki) has taken it
-upon herself to berate me for not having an autodeploy setup for the DongCor
+upon herself to berate me for not having an autodeploy setup for the DongCorp
 website repo. Seeing as my friend danneu had made _captain-githook_, I figured
 I'd try my hand at an autodeploy script, and that it was the perfect chance
 to finally learn Go.
