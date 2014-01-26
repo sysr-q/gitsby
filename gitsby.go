@@ -21,7 +21,7 @@ func home() string {
 func main() {
 	log.SetFlags(log.Ldate|log.Ltime)
 
-	defaultConfig := util.GitsbyFolder("gitsby.json")
+	defaultConfig := util.GitsbyFolder("config.json")
 
 	host := flag.String("host", "0.0.0.0", "host to bind web.go to")
 	port := flag.Int("port", 9999, "port to bind web.go to")
