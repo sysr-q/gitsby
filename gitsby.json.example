@@ -1,7 +1,6 @@
 {
-	"landing": true,
 	"repos": [
-		{"url": "git@bitbucket.com:some-dude/some-repo.git", "directory": "~/some-repo"},
-		{"url": "https://github.com/some-guy/some-other-repo.git"}
+		{"url": "git://github.com/mirrors/linux.git", "directory": "~/kernel"},
+		{"url": "https://github.com/mirrors/chromium"}
 	]
 }
