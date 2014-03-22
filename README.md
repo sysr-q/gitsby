@@ -21,7 +21,7 @@ Gitsby will bind by default to `0.0.0.0:9999` - you can change this via the
 ```
 ~/
 └── gitsby/
-    └── config.json
+    └── gitsby.json
 ```
 
 * List all of your repos in `~/gitsby/gitsby.json`:
