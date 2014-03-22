@@ -1,28 +1,29 @@
 package main
 
 import (
-	"log"
 	"encoding/json"
 	"github.com/hoisie/web"
+	"log"
 )
 
 type ghRepository struct {
 	Name string `json:"name"`
-	Url string `json:"url"`
+	Url  string `json:"url"`
 }
 
 type ghPayload struct {
-	After string `json:"after"`
+	After      string       `json:"after"`
 	Repository ghRepository `json:"repository"`
 }
 
 func GitHub(ctx *web.Context) {
 	var p ghPayload
 	if err := json.Unmarshal([]byte(ctx.Params["payload"]), &p); err != nil {
+		log.Printf("Received unparseable payload: %s\n", err)
 		ctx.Abort(500, "")
 		return
 	}
-	
+
 	owner, name := RepoName(p.Repository.Url)
 	if owner == "" || name == "" {
 		log.Printf("Received unparseable payload for: '%s/%s', ignoring!\n", owner, name)
@@ -44,5 +45,5 @@ func GitHub(ctx *web.Context) {
 			// Only deploy if we pulled successfully.
 			repo.Deploy()
 		}
-	}();
+	}()
 }
