@@ -24,11 +24,10 @@ Gitsby will bind by default to `0.0.0.0:9999` - you can change this via the
     └── config.json
 ```
 
-* List all of your repos in `~/gitsby/config.json`:
+* List all of your repos in `~/gitsby/gitsby.json`:
 
 ```json
 {
-	"landing": true,
 	"repos": [
 		{
 			"url": "https://github.com/username/repo.git"
@@ -47,6 +46,8 @@ check out [GitHub:Help 'Managing deploy keys'][deploy] and `ssh-agent`/
 `ssh-add`), but can optionally contain `directory` (where it will be clone'd
 to) and `hidden` (whether it's hidden on the - currently non-implemented -
 landing page).
+They MAY ALSO include `type`, but that's not implemented or checked yet - it may
+in the future if I implement other repo types than git, however.
 
 * Install The Great Gitsby:
 
@@ -57,7 +58,7 @@ $ go install github.com/plausibility/gitsby
 ...
 $ gitsby -h
 Usage of gitsby:
-  -config="/home/<user>/gitsby/config.json": Gitsby config file
+  -config="/home/<user>/gitsby/gitsby.json": Gitsby config file
   -host="0.0.0.0": host to bind web.go to
   -port=9999: port to bind web.go to
 ```
@@ -66,17 +67,16 @@ Usage of gitsby:
 
 ```
 $ gitsby
-2014/01/26 17:31:10 The Great Gitsby is throwing a party!
-2014/01/26 17:31:10 ➜ Preparing 2 repo(s) for sync
-2014/01/26 17:31:14 ✔ [username/repo] synced
+2014/03/22 17:29:44 The Great Gitsby is sending invites to 2 repos.
+2014/03/22 17:29:50 [username/repo] successfully synced: (stdout)
 Already up-to-date.
-2014/01/26 17:31:14 ✖ [username/repo] failed to 'make autodeploy'! Here's why:
+2014/03/22 17:29:50 [username/repo] failed to deploy! Here's why: (stderr)
 make: *** No rule to make target 'autodeploy'.  Stop.
-2014/01/26 17:31:14 ✔ [username/other-repo] synced
-Already up-to-date.
-2014/01/26 17:31:14 ✖ [username/other-repo] failed to 'make autodeploy'! Here's why:
+2014/03/22 17:29:50 [username/other-repo] doesn't exist, syncing!
+2014/03/22 17:29:59 [username/other-repo] successfully cloned to: /home/you/somewhere-fun (stdout)
+2014/03/22 17:29:59 [username/other-repo] failed to deploy! Here's why: (stderr)
 make: *** No rule to make target 'autodeploy'.  Stop.
-2014/01/26 17:31:14 The party is here: 0.0.0.0:9999
+2014/03/22 17:29:59 The party is here: 0.0.0.0:9999
 ```
 
 * Add a WebHook URL to your GitHub repository.
