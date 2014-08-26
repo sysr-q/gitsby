@@ -21,8 +21,8 @@ func gitsbyFolder(bits ...string) string {
 }
 
 var (
-	host = flag.String("host", "0.0.0.0", "host to bind web.go to")
-	port = flag.Int("port", 9999, "port to bind web.go to")
+	host       = flag.String("host", "0.0.0.0", "host to bind web.go to")
+	port       = flag.Int("port", 9999, "port to bind web.go to")
 	configFile = flag.String("config", gitsbyFolder("gitsby.json"), "Gitsby config file")
 )
 

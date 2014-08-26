@@ -12,9 +12,9 @@ type Git struct {
 	Url       string
 	directory string
 	Hidden    bool
-	Command CommandInfo
+	Command   CommandInfo
 
-	Silent    bool
+	Silent bool
 }
 
 func (g Git) Log(fmt string, in ...interface{}) {

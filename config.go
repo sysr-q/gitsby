@@ -6,10 +6,10 @@ import (
 )
 
 type configRepo struct {
-	Url       string `json:"url"`
-	Directory string `json:"directory"`
-	Hidden    bool   `json:"hidden"`
-	Type      string `json:"type"`
+	Url       string      `json:"url"`
+	Directory string      `json:"directory"`
+	Hidden    bool        `json:"hidden"`
+	Type      string      `json:"type"`
 	Command   CommandInfo `json:"command"`
 }
 
@@ -26,7 +26,7 @@ func ParseConfig(file string) (*Config, error) {
 	config := Config{Repos: make(map[string]Repo)}
 
 	// Temporary variable so we can unmarshal correctly.
-	var c struct{
+	var c struct {
 		Repos []configRepo `json:"repos"`
 	}
 
@@ -37,14 +37,14 @@ func ParseConfig(file string) (*Config, error) {
 	for _, repo := range c.Repos {
 		// TODO: switch repo.Type -> not just Git support.
 		r := Git{
-			Url: repo.Url,
+			Url:       repo.Url,
 			directory: repo.Directory,
-			Hidden: repo.Hidden,
-			Command: repo.Command,
+			Hidden:    repo.Hidden,
+			Command:   repo.Command,
 		}
 
 		owner, name := r.Name()
-		config.Repos[owner + "/" + name] = r
+		config.Repos[owner+"/"+name] = r
 	}
 
 	return &config, nil
