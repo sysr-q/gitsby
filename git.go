@@ -51,7 +51,7 @@ func (g Git) Clone() (bool, error) {
 		args = []string{"clone", g.Url, path.Join(owner, name)}
 	} else {
 		cwd = []string{g.Path(), ".."}
-		args = []string{"clone", g.Url,  g.Directory()}
+		args = []string{"clone", g.Url, g.Directory()}
 	}
 
 	cmd := NewCommand(cwd, "git", args)
@@ -98,7 +98,10 @@ func (g Git) Deploy() (bool, error) {
 	return true, nil
 }
 
-var metadataRegex = regexp.MustCompile(`[:/](?P<owner>\w+)(?:/(?P<repo>.+?))?(?:\.git)?$`)
+// metadataRegex hopefully parses out owner and repo name from a repo URL.
+// It uses [\w-] to match [a-zA-Z0-9_-] for username/repo, which doesn't break
+// on any known usernames currently.
+var metadataRegex = regexp.MustCompile(`[:/](?P<owner>[\w-]+)(?:/(?P<repo>[\w-]+?))?(?:\.git)?$`)
 
 func (g Git) Name() (string, string) {
 	return RepoName(g.Url)

@@ -2,13 +2,16 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/hoisie/web"
+	"io/ioutil"
 	"log"
 )
 
 type ghRepository struct {
-	Name string `json:"name"`
-	Url  string `json:"url"`
+	FullName string `json:"full_name"`
+	Name     string `json:"name"`
+	Url      string `json:"url"`
 }
 
 type ghPayload struct {
@@ -17,28 +20,31 @@ type ghPayload struct {
 }
 
 func GitHub(ctx *web.Context) {
+	body, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		log.Printf("Unable to parse request body: %s\n", err)
+		ctx.Abort(500, fmt.Sprintf("Unable to parse request body: %s", err.Error()))
+		return
+	}
+
 	var p ghPayload
-	if err := json.Unmarshal([]byte(ctx.Params["payload"]), &p); err != nil {
+	if err := json.Unmarshal(body, &p); err != nil {
 		log.Printf("Received unparseable payload: %s\n", err)
-		ctx.Abort(500, "")
+		ctx.Abort(500, fmt.Sprintf("Unable to parse payload: %s", err.Error()))
 		return
 	}
 
-	owner, name := RepoName(p.Repository.Url)
-	if owner == "" || name == "" {
-		log.Printf("Received unparseable payload for: '%s/%s', ignoring!\n", owner, name)
-		ctx.Abort(500, "")
-		return
-	}
+	// GitHub sends: owner/repo
+	fullName := p.Repository.FullName
 
-	repo, ok := config.ReposActive[owner+"/"+name]
+	repo, ok := config.ReposActive[fullName]
 	if !ok {
-		log.Printf("No repo found for: '%s/%s', ignoring!\n", owner, name)
-		ctx.Abort(500, "")
+		log.Printf("No repo found for: '%s', ignoring!\n", fullName)
+		ctx.Abort(500, fmt.Sprintf("No repo found for: '%s'", fullName))
 		return
 	}
 
-	log.Printf("Successful payload received for: '%s/%s'!\n", owner, name)
+	log.Printf("Successful payload received for: '%s'!\n", fullName)
 	// goroutine to cheat around `git pull` potentially blocking HTTP resp.
 	go func() {
 		if ok, err := repo.Pull(); err == nil && ok {
