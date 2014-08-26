@@ -28,33 +28,35 @@ Gitsby will bind by default to `0.0.0.0:9999` - you can change this via the
 
 ```json
 {
-	"repos": [
-		{
-			"url": "https://github.com/username/repo.git"
-		},
-		{
-			"url": "git@github.com:username/other-repo.git",
-			"directory": "~/somewhere-fun",
-			"hidden": true
-		}
-	]
+  "repos": [
+    {
+      "url": "https://github.com/username/repo.git",
+      "command": {"cmd": "make", "args": ["bar", "baz"]}
+    },
+    {
+      "url": "git@github.com:username/other-repo.git",
+      "directory": "~/somewhere-fun",
+      "hidden": true,
+      "command": {"cmd": "./deploy", "args": ["all"]}
+    }
+  ]
 }
 ```
 
 Repos MUST have at least a `url` (NB: if you want to deploy private repos,
 check out [GitHub:Help 'Managing deploy keys'][deploy] and `ssh-agent`/
-`ssh-add`), but can optionally contain `directory` (where it will be clone'd
-to) and `hidden` (whether it's hidden on the - currently non-implemented -
-landing page).
-They MAY ALSO include `type`, but that's not implemented or checked yet - it may
-in the future if I implement other repo types than git, however.
+`ssh-add`), and a `command` (e.g. `{"cmd": "make", "args": ["all", "deploy"]}`),
+but can optionally contain `directory` (where it will be clone'd to) and
+`hidden` (whether it's hidden on the - currently non-implemented - landing
+page). They MAY also include `type`, but that's not implemented or checked yet
+- it may in the future if I implement other repo types than git, however.
 
 * Install The Great Gitsby:
 
 ```
-$ go get github.com/plausibility/gitsby
+$ go get github.com/sysr-q/gitsby
 ...
-$ go install github.com/plausibility/gitsby
+$ go install github.com/sysr-q/gitsby
 ...
 $ gitsby -h
 Usage of gitsby:
@@ -81,22 +83,11 @@ make: *** No rule to make target 'autodeploy'.  Stop.
 
 * Add a WebHook URL to your GitHub repository.
 
-	* Make sure it's `http://example.com:9999/github` (for example); note the
-	trailing `/github`!
+    * Make sure it's `http://example.com:9999/github` (for example); note the
+    trailing `/github`!
 
 * GitHub will notify Gitsby when repos need redeployment, and he will:
 
-	* Run `git pull origin` in the appropriate repository.
-	* Run `make autodeploy` in the repository root, which you can optionally
-	use to automagically deploy your project.
-
-# Why make this?
-
-I've been meaning to learn Go for several months, but just haven't had a good
-reason to. In these months, [Aki](https://github.com/aki--aki) has taken it
-upon herself to berate me for not having an autodeploy setup for the DongCorp
-website repo. Seeing as my friend danneu had made _captain-githook_, I figured
-I'd try my hand at an autodeploy script, and that it was the perfect chance
-to finally learn Go.
-
-TL;DR: It was to scratch my own back.
+    * Run `git pull origin` in the appropriate repository.
+    * Run the specified command in the repository root, which you can use to
+    automagically deploy your project.
