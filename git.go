@@ -12,6 +12,8 @@ type Git struct {
 	Url       string
 	directory string
 	Hidden    bool
+	Command CommandInfo
+
 	Silent    bool
 }
 
@@ -54,7 +56,7 @@ func (g Git) Clone() (bool, error) {
 		args = []string{"clone", g.Url, g.Directory()}
 	}
 
-	cmd := NewCommand(cwd, "git", args)
+	cmd := NewCommand(cwd, CommandInfo{"git", args})
 	cmd.Execute()
 	<-cmd.Done
 
@@ -69,7 +71,7 @@ func (g Git) Clone() (bool, error) {
 }
 
 func (g Git) Pull() (bool, error) {
-	cmd := NewCommand([]string{g.Path()}, "git", []string{"pull", "origin"})
+	cmd := NewCommand([]string{g.Path()}, CommandInfo{"git", []string{"pull", "origin"}})
 	cmd.Execute()
 	<-cmd.Done
 
@@ -84,7 +86,7 @@ func (g Git) Pull() (bool, error) {
 }
 
 func (g Git) Deploy() (bool, error) {
-	cmd := NewCommand([]string{g.Path()}, "make", []string{"autodeploy"})
+	cmd := NewCommand([]string{g.Path()}, g.Command)
 	cmd.Execute()
 	<-cmd.Done
 

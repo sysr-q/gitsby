@@ -1,6 +1,13 @@
 {
 	"repos": [
-		{"url": "git://github.com/mirrors/linux.git", "directory": "~/kernel"},
+		{
+			"url": "git://github.com/mirrors/linux.git",
+			"directory": "~/kernel",
+			"command": {
+				"cmd": "make",
+				"args": ["all"]
+			}
+		},
 		{"url": "https://github.com/mirrors/chromium"}
 	]
 }

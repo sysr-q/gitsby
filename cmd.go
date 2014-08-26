@@ -1,19 +1,24 @@
 package main
 
 import (
-	"fmt"
 	"bytes"
+	"fmt"
 	"os/exec"
 	"path"
 )
 
+type CommandInfo struct {
+	Cmd string `json:"cmd"`
+	Args []string `json:"args"`
+}
+
 type Command struct {
-	Path, Cmd      string
-	Args           []string
+	Path string
+	Info CommandInfo
 	Stdout, Stderr *bytes.Buffer
 	Done           chan interface{}
 	Error          error
-	silent bool
+	silent         bool
 }
 
 func (c *Command) Execute() {
@@ -21,7 +26,7 @@ func (c *Command) Execute() {
 		fmt.Println("Executing:", c)
 	}
 	go func() {
-		cmd := exec.Command(c.Cmd, c.Args...)
+		cmd := exec.Command(c.Info.Cmd, c.Info.Args...)
 		cmd.Dir = c.Path
 		cmd.Stdout = c.Stdout
 		cmd.Stderr = c.Stderr
@@ -30,11 +35,10 @@ func (c *Command) Execute() {
 	}()
 }
 
-func NewCommand(cmdPath []string, cmd string, args []string) *Command {
+func NewCommand(cmdPath []string, info CommandInfo) *Command {
 	return &Command{
 		Path:   path.Join(cmdPath...),
-		Cmd:    cmd,
-		Args:   args,
+		Info: info,
 		Stdout: new(bytes.Buffer),
 		Stderr: new(bytes.Buffer),
 		Done:   make(chan interface{}),

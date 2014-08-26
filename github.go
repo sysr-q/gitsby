@@ -37,7 +37,7 @@ func GitHub(ctx *web.Context) {
 	// GitHub sends: owner/repo
 	fullName := p.Repository.FullName
 
-	repo, ok := config.ReposActive[fullName]
+	repo, ok := config.Repos[fullName]
 	if !ok {
 		log.Printf("No repo found for: '%s', ignoring!\n", fullName)
 		ctx.Abort(500, fmt.Sprintf("No repo found for: '%s'", fullName))
