@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hoisie/web"
+	"net/http"
 	"io/ioutil"
 	"log"
 )
@@ -19,18 +19,20 @@ type ghPayload struct {
 	Repository ghRepository `json:"repository"`
 }
 
-func GitHub(ctx *web.Context) {
-	body, err := ioutil.ReadAll(ctx.Request.Body)
+func GitHub(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Unable to parse request body: %s\n", err)
-		ctx.Abort(500, fmt.Sprintf("Unable to parse request body: %s", err.Error()))
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Unable to parse request body: %s", err.Error())
 		return
 	}
 
 	var p ghPayload
 	if err := json.Unmarshal(body, &p); err != nil {
 		log.Printf("Received unparseable payload: %s\n", err)
-		ctx.Abort(500, fmt.Sprintf("Unable to parse payload: %s", err.Error()))
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Unable to parse payload: %s", err.Error())
 		return
 	}
 
@@ -39,12 +41,15 @@ func GitHub(ctx *web.Context) {
 
 	repo, ok := config.Repos[fullName]
 	if !ok {
-		log.Printf("No repo found for: '%s', ignoring!\n", fullName)
-		ctx.Abort(500, fmt.Sprintf("No repo found for: '%s'", fullName))
+		log.Printf("No repo found for: %s, ignoring!\n", fullName)
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "No repo found for: %s", fullName)
 		return
 	}
 
-	log.Printf("Successful payload received for: '%s'!\n", fullName)
+	log.Printf("Successful payload received for: %s!\n", fullName)
+	w.Write([]byte("Success"))
+
 	// goroutine to cheat around `git pull` potentially blocking HTTP resp.
 	go func() {
 		if ok, err := repo.Pull(); err == nil && ok {
